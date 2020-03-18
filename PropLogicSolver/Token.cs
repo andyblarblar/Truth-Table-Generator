@@ -23,6 +23,10 @@ namespace PropLogicSolver
 
         public char RawToken { get; set; }
 
+        public override string ToString()
+        {
+            return RawToken == '\0' ? TokenType.ToString() : RawToken.ToString();
+        }
     }
 
 }

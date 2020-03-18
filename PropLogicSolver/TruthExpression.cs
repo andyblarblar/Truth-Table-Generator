@@ -10,7 +10,12 @@ namespace PropLogicSolver
 {
     public class TruthExpression
     {
-        public Expression<Func<bool[], bool>> InternalExpression { get; set; }
+        public LambdaExpression InternalExpression { get; set; }
+
+        /// <summary>
+        /// The last parsed molecular sentence in post-fix form
+        /// </summary>
+        public List<Token> Tokens { get; set; }
 
         public byte NumberOfParams { get; set; }
 
@@ -30,7 +35,7 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="tokens">tokens in post-fix form</param>
         /// <returns></returns>
-        public static Expression<Func<bool[],bool>> Parse(List<Token> tokens)
+        public static LambdaExpression Parse(List<Token> tokens)
         {
             var pe = new List<ParameterExpression>();
 
@@ -49,8 +54,8 @@ namespace PropLogicSolver
             foreach (var token in tokens)
             {
                 //push atomic sentences to stack
-                if(!IsOperator(token)) stack.Push(Expression.Variable(typeof(bool),token.RawToken.ToString()));
-
+                if(!IsOperator(token)) stack.Push(pe.Single(p => p.Name == token.RawToken.ToString()));//linq is speget but needed
+                
                 else
                 {
                     //NOT is unary, so we only pop once
@@ -79,9 +84,9 @@ namespace PropLogicSolver
 
             }
 
-            var body = (Expression<Func<bool[], bool>>) stack.Pop();
+            var body = (Expression) stack.Pop();
             
-            return Expression.Lambda<Func<bool[], bool>>(body, pe.ToArray());
+            return Expression.Lambda(body, pe.ToArray());
         }
 
         /// <summary>
@@ -89,7 +94,7 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="strExpr"></param>
         /// <returns></returns>
-        public static List<Token> Tokenize(string strExpr)
+        public List<Token> Tokenize(string strExpr)
         {
             var tokens = new List<Token>();
 
@@ -129,8 +134,12 @@ namespace PropLogicSolver
                         tokens.Add(new Token{TokenType = SLToken.Biconditional});
                         break;
 
-                    case char a:
+                    case char a when !char.IsWhiteSpace(a):
                         tokens.Add(new Token{TokenType = SLToken.AtomicSentence, RawToken = a});
+                        break;
+
+                    //Ignore whitespaces
+                    case char a when char.IsWhiteSpace(a):
                         break;
 
                     default: 
@@ -143,7 +152,6 @@ namespace PropLogicSolver
            
             var postFixTokens = new List<Token>();
             var stack = new Stack<Token>();
-            var stackTemp = new List<Token>();
 
             tokens.Add(new Token{TokenType = SLToken.RParen});
             stack.Push(new Token{TokenType = SLToken.LParen});
@@ -153,32 +161,32 @@ namespace PropLogicSolver
             {
                 if (IsOperator(token))
                 {
-                    stackTemp.Clear();
-
-                    while (IsOperator(stack.Peek()))
+                    while (stack.Count > 0 && IsOperator(stack.Peek()))
                     {
-                        var next = stack.Pop();
 
-                        if (Precedence(stack.Peek()) <= Precedence(token))
+                        if (Precedence(token) <= Precedence(stack.Peek()))
                         {
-                            postFixTokens.Add(next);
-                            continue;
+                            postFixTokens.Add(stack.Pop());
                         }
 
-                        stackTemp.Add(next);
                     }
 
-                    stackTemp.ForEach(item => stack.Push(item));//rebuild stack
+                    stack.Push(token);
                 }
 
                 else if (token.TokenType == SLToken.RParen)
                 {
-                    while (stack.Peek().TokenType != SLToken.LParen)
+                    while (stack.Count > 0 && stack.Peek().TokenType != SLToken.LParen)
                     {
                         postFixTokens.Add(stack.Pop());
                     }
 
-                    stack.Pop();//remove lparen
+                    if (stack.Count > 0 && stack.Peek().TokenType != SLToken.LParen)
+                    {
+                        throw new Exception("Invalid expression, too many right parentheses"); 
+                    }
+
+                    stack.Pop(); //remove lparen  
                 }
 
                 else if(token.TokenType == SLToken.LParen)
@@ -193,8 +201,8 @@ namespace PropLogicSolver
 
             }
 
+            Tokens = postFixTokens;
             return postFixTokens;
-
         }
 
         /// <summary>
@@ -231,7 +239,7 @@ namespace PropLogicSolver
 
         }
 
-        public Func<bool[], bool> Compile() => InternalExpression.Compile();
+        public Delegate Compile() => InternalExpression.Compile(true);
 
     }
 }
