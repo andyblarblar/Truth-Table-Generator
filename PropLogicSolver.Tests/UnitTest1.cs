@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -33,8 +34,15 @@ namespace PropLogicSolver.Tests
 
             parameters.ToList().ForEach(p => inP.Add(true));
 
-            del.DynamicInvoke(inP[0]);
+            var resBool = del switch
+            {
+                Func<bool, bool> func => del.DynamicInvoke(inP[0]),
+                Func<bool, bool, bool> func => del.DynamicInvoke(inP[0], inP[1]),
+                Func<bool, bool, bool, bool> func => del.DynamicInvoke(inP[0], inP[1], inP[2])
 
+            };
+
+            Console.WriteLine((bool) resBool);
             Assert.Pass();
         }
     }

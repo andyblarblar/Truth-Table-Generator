@@ -19,6 +19,8 @@ namespace PropLogicSolver
 
         public byte NumberOfParams { get; set; }
 
+        private const int MaxVariables = 16;
+
         /// <summary>
         /// Constructs an Expression tree from the given string
         /// </summary>
@@ -28,8 +30,9 @@ namespace PropLogicSolver
             var tokens = Tokenize(strExpr);
             InternalExpression = Parse(tokens);
             NumberOfParams = (byte) InternalExpression.Parameters.Count;
+            if(NumberOfParams > MaxVariables) throw new InvalidTruthExpressionException($"More than {MaxVariables} atomic sentences are not supported at this time.");
         }
-
+        
         /// <summary>
         /// Parses the tokens passed into an expression tree
         /// </summary>
@@ -77,7 +80,7 @@ namespace PropLogicSolver
                         SLToken.Xor => Expression.ExclusiveOr(left,right),
                         SLToken.Conditional => Expression.OrElse(Expression.Not(left), right),
                         SLToken.Biconditional => Expression.Not(Expression.ExclusiveOr(left,right)),
-                        _ => throw new Exception($"got {token.TokenType}, expected a binary operator.")
+                        _ => throw new InvalidTruthExpressionException($"got {token.TokenType}, expected a binary operator.")
                     });
 
                 }
@@ -143,7 +146,7 @@ namespace PropLogicSolver
                         break;
 
                     default: 
-                        throw new ArgumentException($"Invalid symbol: {c} in {strExpr}");
+                        throw new InvalidTruthExpressionException($"Invalid symbol: {c} in {strExpr}");
 
                 }
 
@@ -183,7 +186,7 @@ namespace PropLogicSolver
 
                     if (stack.Count > 0 && stack.Peek().TokenType != SLToken.LParen)
                     {
-                        throw new Exception("Invalid expression, too many right parentheses"); 
+                        throw new InvalidTruthExpressionException("Invalid expression, too many right parentheses"); 
                     }
 
                     stack.Pop(); //remove lparen  
@@ -239,7 +242,7 @@ namespace PropLogicSolver
 
         }
 
-        public Delegate Compile() => InternalExpression.Compile(true);
+        public Delegate Compile() => InternalExpression.Compile();
 
     }
 }
