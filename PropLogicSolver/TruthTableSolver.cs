@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PropLogicSolver
 {
-    class TruthTableSolver
+    public class TruthTableSolver
     {
         private Delegate TruthExpression { get; set; }
 
+        private TruthExpression sourceExpression { get; }
         public char[] VarNames { get; }
 
-        public TruthTableSolver(Delegate truthExpression)
+        public TruthTableSolver(TruthExpression truthExpression)
         {
-            TruthExpression = truthExpression;
-            VarNames = new char[truthExpression.Method.GetParameters().Length];
+            sourceExpression = truthExpression;
+            TruthExpression = truthExpression.Compile();
+            VarNames = new char[truthExpression.InternalExpression.Parameters.Count];
 
             //Extract variable names
-            for (var i = 0; i < truthExpression.Method.GetParameters().Length; i++)
+            for (var i = 0; i < VarNames.Length; i++)
             {
-                VarNames[i] = truthExpression.Method.GetParameters()[i].Name[0];
+                VarNames[i] = truthExpression.InternalExpression.Parameters[i].Name[0];
             }
 
         }
@@ -28,11 +31,11 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="args">A bool array that represents the state of all variables. It must be the exact size of all args.</param>
         /// <returns></returns>
-        public bool SolveSingleCase(bool[] args)
+        private bool SolveSingleCase(bool[] args)
         {
-            if(args.Length != TruthExpression.Method.GetParameters().Length) throw new IndexOutOfRangeException("The passed args array is not the same size as the number of args needed.");
+            if(args.Length != VarNames.Length) throw new IndexOutOfRangeException("The passed args array is not the same size as the number of args needed.");
 
-            var res = TruthExpression switch
+            var res = TruthExpression switch //TODO change to a switch on param count
             {
                 Func<bool,bool> func => TruthExpression.DynamicInvoke(args[0]),
                 Func<bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1]),
@@ -57,57 +60,79 @@ namespace PropLogicSolver
 
         }
 
-        public string Solve()
+        public string SolveToString()
         {
             //contains all truth states to solve
-            var args = new List<List<bool>>();
+            var args = new List<IEnumerable<bool>>();
 
             var totalLines = 1 << VarNames.Length;
 
             //Add a list of states for each var
-            foreach (var _ in VarNames)
-            {
-                args.Add(new List<bool>());
-            }
-
-            //add generators for each var
-            for (var i = 0; i < args.Count; i++)
+            for (var i = 0; i < VarNames.Length; i++)
             {
                 var i1 = i;
-                args.ForEach(list => list.AddRange(GenerateBool(i1,totalLines,VarNames.Length)));
+                args.Add(GenerateBool(i1, totalLines, VarNames.Length));
             }
 
             var builder = new StringBuilder();
 
-            builder.Append(stackalloc[] {' ', ' '});
+            builder.Append("  ");
 
             //Add vars to left
             foreach (var varName in VarNames)
             {
-                builder.Append(varName + ' ');
+                builder.Append(varName + " ");
             }
 
-            builder.Append($" | {TruthExpression.Method}");//can change to better represent user input if needed
-            
-            //TODO create Line genorator and compleate solve method.
+            builder
+                .AppendLine($"| {sourceExpression.InternalExpression.Body}")
+                .AppendLine("----------------------------------------------------------------------------");
 
+            GenTableWithStringBuilder(ref builder, ref args, totalLines);
 
-
+            return builder.ToString();
         }
 
-        private void AddTableEntry(ref StringBuilder stringBuilder)
+        private void GenTableWithStringBuilder(ref StringBuilder stringBuilder, ref List<IEnumerable<bool>> vars, int totalLines)
         {
+            for (var i = 0; i < totalLines; i++)
+            {
+                //Add line number
+                stringBuilder.Append(++i + " ");
+                
+                //Add states
+                foreach (var var in vars)
+                {
+                    stringBuilder.Append($"{var.GetEnumerator().Current.ToString().ToUpper()[0]} ");
+                }
 
+                //Super fancy way of getting all of the values of the vars for input into the solver function, then printing
+                stringBuilder.Append("| ")
+                    .Append(SolveSingleCase(vars.Aggregate(new List<bool>(),
+                            (bools, enumerable) =>
+                            {
+                                bools.Add(enumerable.GetEnumerator().Current);
+                                return bools;
+                            })
+                        .ToArray()))
+                    .AppendLine();
+
+                //Advance to next line states
+                foreach (var var in vars)
+                { 
+                    var.GetEnumerator().MoveNext();
+                }
+
+            }
 
         }
 
         /// <summary>
-        /// Iterates through all values for a variable given its position
+        /// Creates an IEnumerable that contains all of the true false values for a variable on the left side of the table.
         /// </summary>
         /// <param name="varIndex">the placement of the variable. Ie, far left is 0</param>
         /// <param name="totalLines">the total lines in the table</param>
         /// <param name="totalVarNum">the total number of variables</param>
-        /// <returns></returns>
         private static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
         {
             //the number of lines before a true changes to a false in the cycle
@@ -135,6 +160,20 @@ namespace PropLogicSolver
             
         }
 
+        /// <summary>
+        /// Iterates through the range of start to end, inclusive. No clue why this inst in the std library.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        private static IEnumerable<int> Range(int start, int end)
+        {
+            for (var i = start; i < end; i++)
+            {
+                yield return i++;
+            }
+            
+        }
 
 
 

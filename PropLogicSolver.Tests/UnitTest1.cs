@@ -16,34 +16,12 @@ namespace PropLogicSolver.Tests
         }
 
         [Test]
-        public void Test1()
+        public void TestTable()
         {
-            var prop = new TruthExpression();
+            var table = new TruthTableSolver(new TruthExpression("(A ^ B) v C v D v E v F v G"));
+            Console.WriteLine(table.SolveToString());
 
-            prop.Construct("~A");
-
-            Console.WriteLine(prop.InternalExpression);
-            Console.WriteLine(prop.InternalExpression.Parameters[0].Name);
-            Console.WriteLine(prop.InternalExpression.Body);
-            
-            var del = prop.Compile();
-
-            var parameters = del.Method.GetParameters();
-
-            var inP = new List<bool>();
-
-            parameters.ToList().ForEach(p => inP.Add(true));
-
-            var resBool = del switch
-            {
-                Func<bool, bool> func => del.DynamicInvoke(inP[0]),
-                Func<bool, bool, bool> func => del.DynamicInvoke(inP[0], inP[1]),
-                Func<bool, bool, bool, bool> func => del.DynamicInvoke(inP[0], inP[1], inP[2])
-
-            };
-
-            Console.WriteLine((bool) resBool);
-            Assert.Pass();
         }
+
     }
 }

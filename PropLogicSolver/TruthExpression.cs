@@ -8,6 +8,9 @@ using Microsoft.VisualBasic.CompilerServices;
 
 namespace PropLogicSolver
 {
+    /// <summary>
+    /// Encapsulates a Sentential Logic expression, to be compiled to a .net lambda
+    /// </summary>
     public class TruthExpression
     {
         public LambdaExpression InternalExpression { get; set; }
@@ -17,9 +20,18 @@ namespace PropLogicSolver
         /// </summary>
         public List<Token> Tokens { get; set; }
 
-        public byte NumberOfParams { get; set; }
-
         private const int MaxVariables = 16;
+
+        public TruthExpression() { }
+
+        /// <summary>
+        /// Creates a truth expression from the passed string
+        /// </summary>
+        /// <param name="expr">A well formed sentential logic expression</param>
+        public TruthExpression(string expr)
+        {
+            Construct(expr);
+        }
 
         /// <summary>
         /// Constructs an Expression tree from the given string
@@ -27,10 +39,10 @@ namespace PropLogicSolver
         /// <param name="strExpr"></param>
         public void Construct(string strExpr)
         {
-            var tokens = Tokenize(strExpr);
-            InternalExpression = Parse(tokens);
-            NumberOfParams = (byte) InternalExpression.Parameters.Count;
-            if(NumberOfParams > MaxVariables) throw new InvalidTruthExpressionException($"More than {MaxVariables} atomic sentences are not supported at this time.");
+            Tokens = Tokenize(strExpr);
+            InternalExpression = Parse(Tokens);
+            var numberOfParams = (byte) InternalExpression.Parameters.Count;
+            if(numberOfParams > MaxVariables) throw new InvalidTruthExpressionException($"More than {MaxVariables} atomic sentences are not supported at this time.");
         }
         
         /// <summary>
@@ -97,7 +109,7 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="strExpr"></param>
         /// <returns></returns>
-        public List<Token> Tokenize(string strExpr)
+        public static List<Token> Tokenize(string strExpr)
         {
             var tokens = new List<Token>();
 
@@ -204,7 +216,6 @@ namespace PropLogicSolver
 
             }
 
-            Tokens = postFixTokens;
             return postFixTokens;
         }
 
