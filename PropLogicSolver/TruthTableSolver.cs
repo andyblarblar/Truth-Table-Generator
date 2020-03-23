@@ -35,25 +35,24 @@ namespace PropLogicSolver
         {
             if(args.Length != VarNames.Length) throw new IndexOutOfRangeException("The passed args array is not the same size as the number of args needed.");
 
-            var res = TruthExpression switch //TODO change to a switch on param count
+            var res = sourceExpression.InternalExpression.Parameters.Count switch 
             {
-                Func<bool,bool> func => TruthExpression.DynamicInvoke(args[0]),
-                Func<bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1]),
-                Func<bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2]),
-                Func<bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3]),
-                Func<bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4]),
-                Func<bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12], args[13]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12], args[13], args[14]),
-                Func<bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool,bool> func => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12], args[13], args[14], args[15]),
-
+                1 => TruthExpression.DynamicInvoke(args[0]),
+                2 => TruthExpression.DynamicInvoke(args[0], args[1]),
+                3 => TruthExpression.DynamicInvoke(args[0], args[1], args[2]),
+                4 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3]),
+                5 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4]),
+                6 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5]),
+                7 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6]),
+                8 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]),
+                9 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8]),
+                10 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9]),
+                11 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10]),
+                12 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11]),
+                13 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12]),
+                14 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12], args[13]),
+                15 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12], args[13], args[14]),
+                16 => TruthExpression.DynamicInvoke(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],args[8],args[9], args[10], args[11], args[12], args[13], args[14], args[15])
             };
 
             return (bool) res;
@@ -88,43 +87,40 @@ namespace PropLogicSolver
                 .AppendLine($"| {sourceExpression.InternalExpression.Body}")
                 .AppendLine("----------------------------------------------------------------------------");
 
-            GenTableWithStringBuilder(ref builder, ref args, totalLines);
-
-            return builder.ToString();
+            return GenTableWithStringBuilder(builder, args, totalLines).ToString();
         }
 
-        private void GenTableWithStringBuilder(ref StringBuilder stringBuilder, ref List<IEnumerable<bool>> vars, int totalLines)
+        private StringBuilder GenTableWithStringBuilder(StringBuilder stringBuilder, IEnumerable<IEnumerable<bool>> vars, int totalLines)
         {
+            //Extract the underlying enumerators for each IEnumerable to prevent multiple enumeration
+            var enums = vars.Select(enumerable => enumerable.GetEnumerator()).ToList();
+
             for (var i = 0; i < totalLines; i++)
             {
                 //Add line number
-                stringBuilder.Append(++i + " ");
-                
-                //Add states
-                foreach (var var in vars)
+                stringBuilder.Append(i + 1 + " ");
+
+                //Add states to left
+                foreach (var enu in enums)
                 {
-                    stringBuilder.Append($"{var.GetEnumerator().Current.ToString().ToUpper()[0]} ");
+                    enu.MoveNext();
+                    stringBuilder.Append($"{enu.Current.ToString().ToUpper()[0]} ");
                 }
 
-                //Super fancy way of getting all of the values of the vars for input into the solver function, then printing
+                //Compute and add result to right
                 stringBuilder.Append("| ")
-                    .Append(SolveSingleCase(vars.Aggregate(new List<bool>(),
-                            (bools, enumerable) =>
+                    .Append(SolveSingleCase(enums.Aggregate(new List<bool>(),
+                            (list, enumerator) =>
                             {
-                                bools.Add(enumerable.GetEnumerator().Current);
-                                return bools;
+                                list.Add(enumerator.Current);
+                                return list;
                             })
                         .ToArray()))
                     .AppendLine();
 
-                //Advance to next line states
-                foreach (var var in vars)
-                { 
-                    var.GetEnumerator().MoveNext();
-                }
-
             }
 
+            return stringBuilder;
         }
 
         /// <summary>
@@ -133,7 +129,7 @@ namespace PropLogicSolver
         /// <param name="varIndex">the placement of the variable. Ie, far left is 0</param>
         /// <param name="totalLines">the total lines in the table</param>
         /// <param name="totalVarNum">the total number of variables</param>
-        private static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
+        public static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
         {
             //the number of lines before a true changes to a false in the cycle
             var numOfSameState = 1 << (totalVarNum - 1 - varIndex);
@@ -142,16 +138,17 @@ namespace PropLogicSolver
 
             for (var i = 0; i < totalLines; i++)
             {
-                //for the first variable, swap each line.
-                if (varIndex == totalVarNum)
+                //for the far right variable, swap each line.
+                if (varIndex == totalVarNum - 1)
                 {
-                    yield return i % totalLines != 0;
+                    yield return cycleState;
+                    cycleState = !cycleState;
                 }
                 //for every other variable, cycle 
                 else
                 {
-                    //start a cycle of the other state every N lines
-                    if (i / numOfSameState == 1) cycleState = !cycleState;
+                    //start a cycle of the other state every N lines. Cast to float to avoid int flooring
+                    if ((float)i / numOfSameState == 1f) cycleState = !cycleState;
 
                     yield return cycleState;
                 }
@@ -170,7 +167,7 @@ namespace PropLogicSolver
         {
             for (var i = start; i < end; i++)
             {
-                yield return i++;
+                yield return i;
             }
             
         }
