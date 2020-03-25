@@ -20,9 +20,13 @@ namespace PropLogicSolver
         /// </summary>
         public List<Token> Tokens { get; set; }
 
+        public string OriginalExpression { get; } 
+
         private const int MaxVariables = 16;
 
-        public TruthExpression() { }
+        public TruthExpression()
+        {
+        }
 
         /// <summary>
         /// Creates a truth expression from the passed string
@@ -30,6 +34,7 @@ namespace PropLogicSolver
         /// <param name="expr">A well formed sentential logic expression</param>
         public TruthExpression(string expr)
         {
+            OriginalExpression = expr;
             Construct(expr);
         }
 
@@ -50,14 +55,14 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="tokens">tokens in post-fix form</param>
         /// <returns></returns>
-        public static LambdaExpression Parse(List<Token> tokens)
+        private static LambdaExpression Parse(IReadOnlyCollection<Token> tokens)
         {
             var pe = new List<ParameterExpression>();
 
             //add parameters
             foreach (var token in tokens) 
             {
-                if (token.TokenType == SLToken.AtomicSentence)
+                if (token.TokenType == SLToken.AtomicSentence && pe.All(per => per.Name != token.RawToken.ToString()))
                 {
                     pe.Add(Expression.Parameter(typeof(bool), token.RawToken.ToString()));
                 }
@@ -69,7 +74,7 @@ namespace PropLogicSolver
             foreach (var token in tokens)
             {
                 //push atomic sentences to stack
-                if(!IsOperator(token)) stack.Push(pe.Single(p => p.Name == token.RawToken.ToString()));//linq is speget but needed
+                if(!IsOperator(token)) stack.Push(pe.Single(p => p.Name == token.RawToken.ToString()));
                 
                 else
                 {
@@ -109,7 +114,7 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="strExpr"></param>
         /// <returns></returns>
-        public static List<Token> Tokenize(string strExpr)
+        private static List<Token> Tokenize(string strExpr)
         {
             var tokens = new List<Token>();
 
@@ -224,7 +229,7 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="Operator"></param>
         /// <returns></returns>
-        public static int Precedence(Token Operator)
+        private static int Precedence(Token Operator)
         {
             return Operator.TokenType switch
             {
@@ -238,7 +243,7 @@ namespace PropLogicSolver
 
         }
 
-        public static bool IsOperator(Token token)
+        private static bool IsOperator(Token token)
         {
             return token switch
             {

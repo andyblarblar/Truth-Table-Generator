@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace PropLogicSolver
@@ -31,9 +32,9 @@ namespace PropLogicSolver
         /// </summary>
         /// <param name="args">A bool array that represents the state of all variables. It must be the exact size of all args.</param>
         /// <returns></returns>
-        private bool SolveSingleCase(bool[] args)
+        private bool SolveSingleCase(IReadOnlyList<bool> args)
         {
-            if(args.Length != VarNames.Length) throw new IndexOutOfRangeException("The passed args array is not the same size as the number of args needed.");
+            if(args.Count != VarNames.Length) throw new IndexOutOfRangeException("The passed args array is not the same size as the number of args needed.");
 
             var res = sourceExpression.InternalExpression.Parameters.Count switch 
             {
@@ -84,7 +85,7 @@ namespace PropLogicSolver
             }
 
             builder
-                .AppendLine($"| {sourceExpression.InternalExpression.Body}")
+                .AppendLine($"| {sourceExpression.OriginalExpression}")
                 .AppendLine("----------------------------------------------------------------------------");
 
             return GenTableWithStringBuilder(builder, args, totalLines).ToString();
@@ -115,7 +116,7 @@ namespace PropLogicSolver
                                 list.Add(enumerator.Current);
                                 return list;
                             })
-                        .ToArray()))
+                    ))
                     .AppendLine();
 
             }
@@ -129,7 +130,8 @@ namespace PropLogicSolver
         /// <param name="varIndex">the placement of the variable. Ie, far left is 0</param>
         /// <param name="totalLines">the total lines in the table</param>
         /// <param name="totalVarNum">the total number of variables</param>
-        public static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        private static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
         {
             //the number of lines before a true changes to a false in the cycle
             var numOfSameState = 1 << (totalVarNum - 1 - varIndex);
@@ -147,8 +149,10 @@ namespace PropLogicSolver
                 //for every other variable, cycle 
                 else
                 {
+                    var temp = (float)i / numOfSameState;
+
                     //start a cycle of the other state every N lines. Cast to float to avoid int flooring
-                    if ((float)i / numOfSameState == 1f) cycleState = !cycleState;
+                    if (FloatIsInt(temp) && i != 0) cycleState = !cycleState;
 
                     yield return cycleState;
                 }
@@ -157,22 +161,8 @@ namespace PropLogicSolver
             
         }
 
-        /// <summary>
-        /// Iterates through the range of start to end, inclusive. No clue why this inst in the std library.
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <returns></returns>
-        private static IEnumerable<int> Range(int start, int end)
-        {
-            for (var i = start; i < end; i++)
-            {
-                yield return i;
-            }
-            
-        }
-
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool FloatIsInt(float x) => Math.Abs(x - (int) x) < float.Epsilon;
 
     }
 }
