@@ -131,6 +131,8 @@ namespace PropLogicSolver
                         break;
 
                     case '^': case '&':
+                    case '.':
+                    case '•':
                         tokens.Add(new Token{TokenType = SLToken.And});
                         break; 
                     
@@ -139,6 +141,7 @@ namespace PropLogicSolver
                         break;
 
                     case '!': case '~':
+                    case '¬':
                         tokens.Add(new Token { TokenType = SLToken.Not });
                         break;
                     

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>b79f450b-84ed-40da-bbdb-289fda356812</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PropLogicSolver\PropLogicSolver.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Elm-frontend\" />
+    <Folder Include="WWWroot\css\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="WWWroot\index.html" />
+    <None Include="WWWroot\js\app.js" />
+  </ItemGroup>
+
+
+</Project>

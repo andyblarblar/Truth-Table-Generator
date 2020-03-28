@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace PropLogicSolver.Tests
         [Test]
         public void TablesParseToString()
         {
-            var table = new TruthTableSolver(new TruthExpression("(A v B)"));
+            var table = new TruthTableSolver(new TruthExpression("{[(AvB)↔(C . D)]v(J . K)}"));
             Console.WriteLine(table.SolveToString());
 
         }
