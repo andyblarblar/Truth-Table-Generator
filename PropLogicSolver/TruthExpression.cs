@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices.ComTypes;
-using Microsoft.VisualBasic.CompilerServices;
+
 
 namespace PropLogicSolver
 {

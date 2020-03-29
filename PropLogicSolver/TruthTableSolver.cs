@@ -130,7 +130,7 @@ namespace PropLogicSolver
         /// <param name="varIndex">the placement of the variable. Ie, far left is 0</param>
         /// <param name="totalLines">the total lines in the table</param>
         /// <param name="totalVarNum">the total number of variables</param>
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
         {
             //the number of lines before a true changes to a false in the cycle
