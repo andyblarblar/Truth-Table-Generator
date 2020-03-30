@@ -1,0 +1,49 @@
+﻿
+<!--Unicode adder buttons-->
+<div id="Button-holder">
+    <button @onclick=@(e => AppendToInput("⊕"))>⊕</button>
+    <button @onclick=@(e => AppendToInput("→"))>→</button>
+    <button @onclick=@(e => AppendToInput("⊃"))>⊃</button>
+    <button @onclick=@(e => AppendToInput("↔"))>↔</button>
+</div>
+
+<br/>
+<input type="text" id="expression-input" placeholder="Enter your expression here..." @bind="@UserInput" @bind:event="oninput" /> 
+<button @onclick="@CalcTruthTable">Solve</button>
+<br/>
+<p style="@TtStyle">@TruthTableResult</p>
+
+
+@code {
+
+    public string UserInput = "";
+
+    public string TruthTableResult = "";
+
+    public string TtStyle = "";
+
+    public void AppendToInput(string input) => UserInput += input;
+
+    public void CalcTruthTable()
+    {
+        var truthTable = new TruthTableSolver(new TruthExpression(UserInput));
+
+        try
+        {
+            TruthTableResult = truthTable.SolveToString();
+            TtStyle = "color:black";
+        }
+        catch (InvalidTruthExpressionException e)
+        {
+            TruthTableResult = "Oops! It looks like there was an issue. Here's what I could figure out:\n" + e.Message;
+            TtStyle = "color:red";
+        }
+        catch (Exception e)
+        {
+            TruthTableResult = "Oops! It looks like there was an issue. Here's what I could figure out:\n" + e.Message;
+            TtStyle = "color:red";
+        }
+
+    }
+
+}

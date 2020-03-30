@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PropLogicSolver
 {
-    class InvalidTruthExpressionException : Exception
+    public class InvalidTruthExpressionException : Exception
     {
         public InvalidTruthExpressionException(string message) : base(message)
         {

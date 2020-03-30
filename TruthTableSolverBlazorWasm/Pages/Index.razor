@@ -1,7 +1,37 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<style></style>
+<h1 style="text-align: center">Welcome to Andy's Amazing Truth Table Solver! </h1><br/>
+<p style="text-align: center">
+    This Website is powered by WebAssembly! If you don't know what that means, don't worry. All you need to know is that this website will calculate code on <strong>your</strong>
+    computer. So if things get slow, don't blame me 😉 <br/>
+    This solver accepts the following symbols:
+    <ul style="text-align: center">
+        <li>
+            Conjunction: . • ^ &(Broken right now due to HTML sharing amp for things, i'm not a frontend guy lol)
+        </li>
+        <li>
+            Disjunction: v |
+        </li>
+        <li>
+            Negation: ~ ! ¬
+        </li>
+        <li>
+            Material Conditional: > → ⊃
+        </li>
+        <li>
+            Biconditional: ↔
+        </li>
+        <li>
+            Xor (Negated Biconditional): ⊕
+        </li>
+        <li>
+            Scoping: (){}[] are all excepted and treated equally.
+        </li>
+    </ul>
+    One last thing. This solver currently only accepts up to 16 unique variables due to .Net delegate constraints. It does however accept anything other than the above symbols as a valid variable name, even emojis. <br/>
+    Have fun and be sure to report any issues or suggestions to the <a href="https://github.com/andyblarblar/Truth-Table-Generator">github repo!</a>!
+</p>
 
-Welcome to your new app.
+<TruthTable/>
 
-<SurveyPrompt Title="How is Blazor working for you?" />

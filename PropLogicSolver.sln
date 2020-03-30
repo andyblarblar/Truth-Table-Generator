@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PropLogicSolver.Tests", "Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TruthTableSolver", "TruthTableSolver\TruthTableSolver.csproj", "{796C2D3D-04F4-4EB3-942C-EA10DB5C33B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruthTableSolverBlazorWasm", "TruthTableSolverBlazorWasm\TruthTableSolverBlazorWasm.csproj", "{4014024C-950D-4705-9FEA-FFD3A696078B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TruthTableSolverBlazorWasm", "TruthTableSolverBlazorWasm\TruthTableSolverBlazorWasm.csproj", "{4014024C-950D-4705-9FEA-FFD3A696078B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
