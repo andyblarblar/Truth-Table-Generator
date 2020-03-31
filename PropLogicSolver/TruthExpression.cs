@@ -68,38 +68,45 @@ namespace PropLogicSolver
 
             var stack = new Stack<Expression>();
 
-            //construct InternalExpression tree
-            foreach (var token in tokens)
+            try
             {
-                //push atomic sentences to stack
-                if(!IsOperator(token)) stack.Push(pe.Single(p => p.Name == token.RawToken.ToString()));
-                
-                else
+                //construct InternalExpression tree
+                foreach (var token in tokens)
                 {
-                    //NOT is unary, so we only pop once
-                    if (token.TokenType == SLToken.Not)
+                    //push atomic sentences to stack
+                    if (!IsOperator(token)) stack.Push(pe.Single(p => p.Name == token.RawToken.ToString()));
+
+                    else
                     {
-                        stack.Push(Expression.Not(stack.Pop()));
-                        continue;
+                        //NOT is unary, so we only pop once
+                        if (token.TokenType == SLToken.Not)
+                        {
+                            stack.Push(Expression.Not(stack.Pop()));
+                            continue;
+                        }
+
+                        var right = stack.Pop();//right node
+                        var left = stack.Pop();//left node
+
+                        //handle binary operators by popping the stack twice to get the right and left nodes
+                        stack.Push(token.TokenType switch
+                        {
+                            SLToken.And => (Expression)Expression.AndAlso(left, right),
+                            SLToken.Or => Expression.OrElse(left, right),
+                            //NOT done already
+                            SLToken.Xor => Expression.ExclusiveOr(left, right),
+                            SLToken.Conditional => Expression.OrElse(Expression.Not(left), right),
+                            SLToken.Biconditional => Expression.Not(Expression.ExclusiveOr(left, right)),
+                            _ => throw new InvalidTruthExpressionException($"got {token.TokenType}, expected a binary operator.")
+                        });
+
                     }
 
-                    var right = stack.Pop();//right node
-                    var left = stack.Pop();//left node
-
-                    //handle binary operators by popping the stack twice to get the right and left nodes
-                    stack.Push(token.TokenType switch
-                    {
-                        SLToken.And =>(Expression) Expression.AndAlso(left, right),
-                        SLToken.Or => Expression.OrElse(left, right),
-                        //NOT done already
-                        SLToken.Xor => Expression.ExclusiveOr(left,right),
-                        SLToken.Conditional => Expression.OrElse(Expression.Not(left), right),
-                        SLToken.Biconditional => Expression.Not(Expression.ExclusiveOr(left,right)),
-                        _ => throw new InvalidTruthExpressionException($"got {token.TokenType}, expected a binary operator.")
-                    });
-
                 }
-
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InvalidTruthExpressionException("An operator is missing an operand");
             }
 
             var body = (Expression) stack.Pop();

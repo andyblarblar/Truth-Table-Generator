@@ -1,20 +1,30 @@
 ﻿
+<style>
+.truth-table{
+    white-space:pre;
+}
+
+</style>
+
 <!--Unicode adder buttons-->
 <div id="Button-holder">
-    <button @onclick=@(e => AppendToInput("⊕"))>⊕</button>
-    <button @onclick=@(e => AppendToInput("→"))>→</button>
-    <button @onclick=@(e => AppendToInput("⊃"))>⊃</button>
-    <button @onclick=@(e => AppendToInput("↔"))>↔</button>
+    <button @onmousedown=@(e => AppendToInput("⊕")) @onmousedown:preventDefault>⊕</button>
+    <button @onmousedown=@(e => AppendToInput("→")) @onmousedown:preventDefault>→</button>
+    <button @onmousedown=@(e => AppendToInput("⊃")) @onmousedown:preventDefault>⊃</button>
+    <button @onmousedown=@(e => AppendToInput("↔")) @onmousedown:preventDefault>↔</button>
 </div>
 
 <br/>
-<input type="text" id="expression-input" placeholder="Enter your expression here..." @bind="@UserInput" @bind:event="oninput" /> 
+<input type="text" id="expression-input" placeholder="Enter your expression here..." @bind="@UserInput" @bind:event="oninput" @onkeypress="@(e => Enter(e))"/>
 <button @onclick="@CalcTruthTable">Solve</button>
+<input type="checkbox" @bind="@AlwaysSolve"/><text>realtime(press space after entering)</text>
 <br/>
-<p style="@TtStyle">@TruthTableResult</p>
+<p class="truth-table" style="@TtStyle">@TruthTableResult</p>
 
 
 @code {
+
+    public bool AlwaysSolve = false;
 
     public string UserInput = "";
 
@@ -24,18 +34,20 @@
 
     public void AppendToInput(string input) => UserInput += input;
 
+
     public void CalcTruthTable()
     {
-        var truthTable = new TruthTableSolver(new TruthExpression(UserInput));
-
+        TruthTableResult = "Loading... this may take a moment.";
         try
         {
-            TruthTableResult = truthTable.SolveToString();
+            var truthTable = new TruthTableSolver(new TruthExpression(UserInput));
+            var res = truthTable.SolveToString();
+            TruthTableResult = res;
             TtStyle = "color:black";
         }
         catch (InvalidTruthExpressionException e)
         {
-            TruthTableResult = "Oops! It looks like there was an issue. Here's what I could figure out:\n" + e.Message;
+            TruthTableResult = "Oops! It looks like there was an issue in your expression. Here's what I could figure out:\n" + e.Message;
             TtStyle = "color:red";
         }
         catch (Exception e)
@@ -43,7 +55,19 @@
             TruthTableResult = "Oops! It looks like there was an issue. Here's what I could figure out:\n" + e.Message;
             TtStyle = "color:red";
         }
+    }
 
+    public void Enter(KeyboardEventArgs e)
+    {
+        if(AlwaysSolve)
+        {
+            
+            CalcTruthTable();
+        }
+        else if(e.Key == "Enter")
+        {
+            CalcTruthTable();
+        }
     }
 
 }

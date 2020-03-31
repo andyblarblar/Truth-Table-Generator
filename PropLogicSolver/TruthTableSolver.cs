@@ -60,6 +60,9 @@ namespace PropLogicSolver
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string SolveToString()
         {
             //contains all truth states to solve

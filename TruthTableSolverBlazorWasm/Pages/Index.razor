@@ -1,37 +1,70 @@
 ﻿@page "/"
 
-<style></style>
-<h1 style="text-align: center">Welcome to Andy's Amazing Truth Table Solver! </h1><br/>
-<p style="text-align: center">
-    This Website is powered by WebAssembly! If you don't know what that means, don't worry. All you need to know is that this website will calculate code on <strong>your</strong>
-    computer. So if things get slow, don't blame me 😉 <br/>
-    This solver accepts the following symbols:
-    <ul style="text-align: center">
-        <li>
-            Conjunction: . • ^ &(Broken right now due to HTML sharing amp for things, i'm not a frontend guy lol)
-        </li>
-        <li>
-            Disjunction: v |
-        </li>
-        <li>
-            Negation: ~ ! ¬
-        </li>
-        <li>
-            Material Conditional: > → ⊃
-        </li>
-        <li>
-            Biconditional: ↔
-        </li>
-        <li>
-            Xor (Negated Biconditional): ⊕
-        </li>
-        <li>
-            Scoping: (){}[] are all excepted and treated equally.
-        </li>
-    </ul>
-    One last thing. This solver currently only accepts up to 16 unique variables due to .Net delegate constraints. It does however accept anything other than the above symbols as a valid variable name, even emojis. <br/>
-    Have fun and be sure to report any issues or suggestions to the <a href="https://github.com/andyblarblar/Truth-Table-Generator">github repo!</a>!
-</p>
+<style>
+    .about {
+        grid-column: 1;
+       
+    }
 
-<TruthTable/>
+    .truth-solver {
+        grid-column: 2;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 30% auto;
+        grid-gap: 30px;
+        justify-content:left;
+    }
+</style>
+
+<h1 style="text-align: center">Welcome to Andy's Amazing Truth Table Solver! </h1>
+<br />
+<div class="container">
+    <div class="about">
+        <p>
+            This Website is powered by WebAssembly! If you don't know what that means, don't worry. All you need to know is that this website will calculate code on <strong>your</strong>
+            computer. So if things get slow, don't blame me 😉 <br />
+            This solver accepts the following symbols:
+            <div class="legand">
+                <ul>
+                    <li>
+                        Conjunction: . • ^ &(Broken right now due to HTML sharing amp for things, i'm not a frontend guy lol)
+                    </li>
+                    <li>
+                        Disjunction: v |
+                    </li>
+                    <li>
+                        Negation: ~ ! ¬
+                    </li>
+                    <li>
+                        Material Conditional: > → ⊃
+                    </li>
+                    <li>
+                        Biconditional: ↔
+                    </li>
+                    <li>
+                        Xor (Negated Biconditional): ⊕
+                    </li>
+                    <li>
+                        Scoping: (){}[] are all excepted and treated equally.
+                    </li>
+                </ul>
+            </div>
+            One last thing. This solver currently only accepts up to 16 unique variables due to .Net delegate constraints. It does however accept anything other than the above symbols as a valid variable name, even emojis. <br />
+            Have fun and be sure to report any issues or suggestions to the <a href="https://github.com/andyblarblar/Truth-Table-Generator">github repo!</a>
+        </p>
+    </div>
+
+    <div class="truth-solver">
+        <TruthTable />
+    </div>
+</div>
+
+
+
+
+
+
+
 
