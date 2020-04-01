@@ -11,6 +11,9 @@ namespace PropLogicSolver
     /// </summary>
     public class TruthExpression
     {
+        /// <summary>
+        /// The interal expression tree
+        /// </summary>
         public LambdaExpression InternalExpression { get; set; }
 
         /// <summary>
@@ -29,6 +32,7 @@ namespace PropLogicSolver
         /// <summary>
         /// Creates a truth expression from the passed string
         /// </summary>
+        /// <exception cref="InvalidTruthExpressionException"></exception>
         /// <param name="expr">A well formed sentential logic expression</param>
         public TruthExpression(string expr)
         {
@@ -39,6 +43,7 @@ namespace PropLogicSolver
         /// <summary>
         /// Constructs an Expression tree from the given string
         /// </summary>
+        /// <exception cref="InvalidTruthExpressionException"></exception>
         /// <param name="strExpr"></param>
         public void Construct(string strExpr)
         {
@@ -52,7 +57,6 @@ namespace PropLogicSolver
         /// Parses the tokens passed into an expression tree
         /// </summary>
         /// <param name="tokens">tokens in post-fix form</param>
-        /// <returns></returns>
         private static LambdaExpression Parse(IReadOnlyCollection<Token> tokens)
         {
             var pe = new List<ParameterExpression>();
@@ -211,7 +215,7 @@ namespace PropLogicSolver
 
                     if (stack.Count > 0 && stack.Peek().TokenType != SLToken.LParen)
                     {
-                        throw new InvalidTruthExpressionException("Invalid expression, too many right parentheses"); 
+                        throw new InvalidTruthExpressionException("Too many right parentheses"); 
                     }
 
                     stack.Pop(); //remove lparen  

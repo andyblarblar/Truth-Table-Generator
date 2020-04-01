@@ -13,6 +13,11 @@ namespace PropLogicSolver
         private TruthExpression sourceExpression { get; }
         public char[] VarNames { get; }
 
+        /// <summary>
+        /// Creates truthtable by compiling the passed truthexpression
+        /// </summary>
+        /// <exception cref="InvalidTruthExpressionException">thrown for errors in expression compilation</exception>
+        /// <param name="truthExpression"></param>
         public TruthTableSolver(TruthExpression truthExpression)
         {
             sourceExpression = truthExpression;
@@ -61,7 +66,7 @@ namespace PropLogicSolver
         }
 
         /// <summary>
-        /// 
+        /// Solves the truthtable and formats to a string.
         /// </summary>
         public string SolveToString()
         {
@@ -133,7 +138,6 @@ namespace PropLogicSolver
         /// <param name="varIndex">the placement of the variable. Ie, far left is 0</param>
         /// <param name="totalLines">the total lines in the table</param>
         /// <param name="totalVarNum">the total number of variables</param>
-        //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private static IEnumerable<bool> GenerateBool(int varIndex, int totalLines, int totalVarNum)
         {
             //the number of lines before a true changes to a false in the cycle
