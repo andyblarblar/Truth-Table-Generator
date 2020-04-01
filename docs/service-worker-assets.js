@@ -5,7 +5,7 @@
       "url": "CSS\/site.css"
     },
     {
-      "hash": "sha256-qU+KhVPK6oQw3UyjzAHU4xjRmCj3TLZUU\/+39dni9E0=",
+      "hash": "sha256-4mBpYwcce0NQGqC2m1tPbmeMek8Zp/WofPpjcBFyre0=",
       "url": "favicon.ico"
     },
     {
@@ -13,7 +13,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-eLefPKCSQj4y4orB\/XdLwyeoVwIMWmPpZijABDeU\/XM=",
+      "hash": "sha256-3a35GZ+JsVdHAtpQelix9YRYtDbyCAABUMvQYK2ZWnY=",
       "url": "index.html"
     },
     {
